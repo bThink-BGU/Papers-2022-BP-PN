@@ -1,2 +1,6 @@
-# Papers-2022-BP-PN
-Code appendix for the paper "What Petri Net Obliges Us to Say"
+# What Petri Net Obliges Us to Say
+Code appendix for the paper https://arxiv.org/abs/2205.00221
+
+## Academic Citation
+To cite our paper:
+Elyasaf, A., Yaacov, T., & Weiss, G. (2022). What Petri Net Obliges Us to Say. arXiv preprint arXiv:2205.00221.
