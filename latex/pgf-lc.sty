@@ -1,0 +1,305 @@
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{pgf-lc}[2020/10/07 v0.1 Some LaTeX macros for drawing BP-related pictures.]
+
+\RequirePackage{tikz}
+\RequirePackage{ifthen}
+\usetikzlibrary{arrows,shapes,automata,backgrounds,petri,positioning,calc}
+
+\tikzstyle{automata state}=[circle,thick,draw=black!75,fill=yellow!50,minimum size=5mm]
+\tikzstyle{automata additional state}=[circle,thick,draw=black!75,fill=orange!50,minimum size=5mm]
+\tikzstyle{place}=[circle,thick,draw=blue!75,fill=blue!20,minimum size=5mm]
+\tikzstyle{red place}=[place,draw=red!75,fill=red!20]
+\tikzstyle{transition}=[rectangle,thick,draw=black!75,fill=green!20,minimum size=4mm]
+\tikzstyle{transition fault}=[rectangle,thick,draw=black!75,fill=red!20,minimum size=4mm]
+\tikzstyle{transition other}=[rectangle,dashed,draw=black!75,fill=green!20,minimum size=4mm]
+\tikzstyle{place other}=[circle,dashed,draw=blue!75,fill=blue!20,minimum size=5mm]
+\tikzstyle{token}=[circle,fill,inner sep=1.5pt,anchor=center]
+\tikzstyle{every label}=[black]
+\tikzset{edge/.style = {->,> = latex'}}
+\tikzset{align=center,node distance=1.3cm and 2cm,bend angle=37,initial text =,text centered}
+\tikzset{
+    railway/.pic={
+    % \tikzset{align=center,node distance=2cm and 2cm,bend angle=37,initial text =}
+    \node [place] (p#11) [label=above:$p_{#1,1}$] {};
+    \node [token](p#11token) at (p#11){};
+    \node [transition] (app#1) [right of=p#11,label=below:$approaching_#1$] {};
+    \node [place] (p#12) [right of=app#1,label=above:$p_{#1,2}$] {};
+    \node [transition] (en#1) [right of=p#12,label=below:$entering_#1$] {};
+    \node [place] (p#13) [right of=en#1,label=above:$p_{#1,3}$] {};
+    \node [transition] (lea#1) [right of=p#13,label=below:$leaving_#1$] {};
+    \draw[edge] (p#11) to (app#1);
+    \draw[edge] (app#1) to (p#12);
+    \draw[edge] (p#12) to (en#1);
+    \draw[edge] (en#1) to (p#13);
+    \draw[edge] (p#13) to (lea#1);
+    \draw[edge] (lea#1) to[bend right] (p#11);
+  },
+  pics/controller/.default=1,
+  controller/.pic={
+    \ifthenelse{\equal{#1}{}}{
+      \def\opac{1}
+    }{
+      \def\opac{#1}
+    }
+    \node [place] (p1) [label=left:$p_1$] {};
+    \node [place,opacity=\opac] (p2) [right of=p1,label=left:$p_2$] {};
+    \node [place] (p3) [right=1.6cm of p2,label=left:$p_3$] {};
+    \node [place] (p4) [right of=p3,label=left:$p_4$] {};
+    \node [transition] (closing) [below left of=p2,label=left:$\mathit{closing}$\\$\mathit{request}$] {};
+    \node [transition] (opening) [below right of=p3,label=right:$\mathit{opening}$\\$\mathit{request}$] {};
+    \node [place] (p5) [below=0.5cm of closing,label=left:$p_5$] {};
+    \node [place,opacity=\opac] (p6) [below=0.5cm of opening,label=left:$p_6$] {};
+    \draw[edge] (p1) to (closing);
+    \draw[edge] (p2) to (closing);
+    \draw[edge] (closing) to (p3);
+    \draw[edge] (p3) to (opening);
+    \draw[edge] (p4) to (opening);
+    \draw[edge] (opening) to (p2);
+    \draw[edge] (closing) to (p5);
+    \draw[edge] (opening) to (p6);
+  },
+  controller_display/.pic={
+    \pic {controller={1}};
+    \node [transition other] (app) [above of=p1,label=above:$approaching$] {};
+    \node [transition other] (lea) [above of=p4,label=above:$leaving$] {};
+    \draw[edge,dashed] (app) to (p1);
+    \draw[edge,dashed] (lea) to (p4);
+  },
+  barrier/.pic={
+    \node [transition] (low) [label=left:$lower$] {};
+    \node [place] (p7) [above right of=low,label=right:$p_7$] {};
+    \node[token](p7token) at (p7){};
+    \node [transition] (raise) [below right of=p7,label=left:$raise$] {};
+    \node [place] (p8) [below left of=raise,label=right:$p_8$] {};
+    \draw[edge] (low) to (p8);
+    \draw[edge] (p8) to (raise);
+    \draw[edge] (raise) to (p7);
+    \draw[edge] (p7) to (low);
+  },
+  barrier_display/.pic={
+    \pic {barrier};
+    \node [place other] (p5) [above of=low,label=left:$p_5$] {};
+    \node [place other] (p6) [above of=raise,label=right:$p_6$] {};
+    \draw[edge,dashed] (p5) to (low);
+    \draw[edge,dashed] (p6) to (raise);
+  },
+  pics/single_track_display/.style 2 args={code={
+    \ifthenelse{\equal{#2}{}}{
+      \def\opac{1}
+    }{
+      \def\opac{#2}
+    }
+  \begin{scope}[local bounding box=model]
+  \pic[local bounding box=track1] at (0,0) {railway={1}};
+  \pic[local bounding box=controller] at (1.3,-1.8) {controller={#2}};
+  \pic[local bounding box=barrier] at (3.4,-5.7) {barrier};
+  \end{scope}
+  
+  \draw[dashed] (model.north west) rectangle ($(model.north east)+(0,-2.3)$) node [pos=0.1]{$1^{st}$ track};
+  \draw[dashed] ($(model.north west)+(0,-2.6)$) rectangle ($(model.north east)+(0,-5.7)$) node [pos=0.1]{controller};
+  \draw[dashed] ($(model.north west)+(0,-6)$) rectangle ($(model.south east)+(0,-0.1)$) node [pos=0.1]{barrier};
+    
+    \node [place] (p9) [right of=p5,label=left:$p_9$] {};
+    \draw[edge] (app1) to (p1);
+    \draw[edge,opacity=\opac] (p6) -- (raise) node[midway, right] {#1};
+    \draw[edge] (p5) to (low);
+    \draw[edge] (lea1) to (p4);
+    \draw[edge] (low) to (p9);
+    \draw[edge] (p9) to (en1);
+    \ifthenelse{\equal{#1}{}}{
+        % \node[token] at (p6) {};
+        \node[token] at (p2) {};
+    }
+    {
+        \node[opacity=\opac] at (p6) {#1};
+        \node[opacity=\opac] at (p2) {#1};
+    }
+  }},
+%   pics/single_track_display/.default={1}{1},
+  multi_track_display/.pic={
+    \begin{scope}[local bounding box=mmodel]
+      \pic[local bounding box=single_track_display,opacity=0.4] at (0,0) {single_track_display={$n$}{#1}};
+      \pic[local bounding box=trackn] at (-0.5,2.6) {railway={n}};
+    \end{scope}
+    \draw[dashed] ($(mmodel.north west)+(0,0)$) rectangle ($(mmodel.north east)+(-0.5,-2.3)$) node [pos=0.1]{$n^{st}$ track};
+    \draw[edge] (appn) to[bend left] (p1);
+    \draw[edge](p9) to (enn);
+    \draw[edge] (lean) to[bend left] (p4);
+    \draw[edge] (raise) to[bend right] node[midway, right] {$n$} (p6);
+    \draw[edge] (p6) to (closing);
+    \node [transition] (kd) [left=1.3cm of low,label=left:$\mathit{keep}$\\$\mathit{down}$] {};
+    \draw[edge] (p5) to (kd);
+    \draw[edge] (p8) to (kd);
+    \draw[edge] (kd) to (p9);
+    \draw[edge] (kd) to[bend right] (p8);
+  },
+  pics/multi_track_display/.default=1,
+  multi_track_fault_display/.pic={
+    \pic[opacity=0.4]{multi_track_display={0.4}};
+    \node [transition fault] (fen1) [above=0.4cm of en1,label=above:$\mathit{fault\,entering}_{1}$] {};
+    \node [transition fault] (fenn) [above=0.4cm of enn,label=above:$\mathit{fault\,entering}_{n}$] {};
+    \node [transition fault] (fraise) [right=1cm of raise,label=below:$\mathit{fault}$\\$\mathit{raise}$] {};
+    \draw[edge] (p12) to[bend left] (fen1);
+    \draw[edge] (fen1) to[bend left] (p13);
+    \draw[edge] (pn2) to[bend left] (fenn);
+    \draw[edge] (fenn) to[bend left] (pn3);
+    \draw[edge] (p8) to (fraise);
+    \draw[edge] (fraise) to (p7);
+    \tikzset{bend angle=10}
+    \draw[edge](enn) to[bend right] (p9);
+    \draw[edge](en1) to[bend right] (p9);
+    \draw[edge](p9) to (lea1);
+    \draw[edge](p9) to (lean);
+  },
+  bp_automata/.pic={
+    \tikzset{node distance=2.6cm and 0.5cm}
+    \node [automata state] (s2) {};
+    \node [automata state, initial] (s3) [below of=s2] {};
+    \node [automata state] (s4) [below right of=s3] {};
+    \node [automata state] (s5) [above right of=s4] {};
+    \node [automata state] (s1) [above of=s5] {};
+    \draw[edge] (s2) to node[midway,left] {$raise$} (s3);
+    \draw[edge] (s3) to node[midway,left] {$approaching$} (s4);
+    \draw[edge] (s4) to node[midway,right] {$lower$} (s5);
+    \draw[edge] (s5) to node[midway,right] {$entering$} (s1);
+    \draw[edge] (s1) to node[midway,above] {$leaving$} (s2);
+    \draw[edge] (s2) to node[midway] {$approaching$} (s5);
+  },
+  pn_automata/.pic={
+    \tikzset{node distance=2.6cm and 0.5cm}
+    \node [automata state] (s2) {};
+    \node [automata state, initial] (s3) [below of=s2] {};
+    \node [automata state] (s4) [below right of=s3] {};
+    \node [automata state] (s5) [above right of=s4] {};
+    \node [automata state] (s1) [above of=s5] {};
+    \node [automata additional state] (s6) [below right of=s2] {};
+    \draw[edge] (s2) to node[midway,left] {$raise$} (s3);
+    \draw[edge] (s3) to node[midway,left] {$approaching$} (s4);
+    \draw[edge] (s4) to node[midway,right] {$lower$} (s5);
+    \draw[edge] (s5) to node[midway,right] {$entering$} (s1);
+    \draw[edge] (s1) to node[midway,above] {$leaving$} (s2);
+    \draw[edge] (s2) to node[midway] {$approaching$} (s6);
+    \draw[edge] (s6) to node[midway] {$raise$} (s4);
+    % \draw[edge] (s6) to node[midway] {$entering$}  (s1);
+  },
+  pics/philosopher/.style n args={8}{code={
+    \tikzset{node distance=1cm and 1.4cm}
+    \tikzset{#8}
+    \node [transition] (tlf#1) [label=above:\vphantom{g}#2 fork] {};
+    \node [place] (p1#1) [right= of tlf#1] {};
+    \node [transition] (se#1) [right= of p1#1,label=above:start #3] {};
+    \node [place] (p2#1) [right= of se#1] {};
+    \node [transition] (trf#1) [right= of p2#1, label=above:#4 fork] {};
+    \node [place] (p3#1) [below of=tlf#1] {};
+    \node[token](p3token#1) at (p3#1){};
+    \node [place] (p4#1) [below of=p1#1] {};
+    \node [place] (p5#1) [below of=p2#1] {};
+    \node [place] (p6#1) [below of=trf#1] {};
+    \node[token](p6token#1) at (p6#1){};
+    \node [transition] (plf#1) [below of=p3#1, label=below:#5 fork] {};
+    \node [place] (p7#1) [right= of plf#1] {};
+    \node [transition] (st#1) [right= of p7#1, label=below:start #6] {};
+    \node [place] (p8#1) [right= of st#1] {};
+    \node [transition] (prf#1) [right= of p8#1, label=below:#7 fork] {};
+    \draw[#8] (tlf#1) to (p1#1);
+    \draw[#8] (p1#1)  to (se#1);
+    \draw[edge] (se#1)  to (p4#1);
+    \draw[edge] (p4#1)  to (st#1);
+    \draw[#8] (st#1)  to (p7#1);
+    \draw[#8] (p7#1)  to (plf#1);
+    \draw[#8] (plf#1) to (p3#1);
+    \draw[#8] (p3#1)  to (tlf#1);
+    \draw[edge] (st#1)  to (p5#1);
+    \draw[edge] (p5#1)  to (se#1);
+    \draw[#8] (st#1)  to (p8#1);
+    \draw[#8] (p8#1)  to (prf#1);
+    \draw[#8] (prf#1) to (p6#1);
+    \draw[#8] (p6#1)  to (trf#1);
+    \draw[#8] (trf#1)  to (p2#1);
+    \draw[#8] (p2#1)  to (se#1);
+  }},
+  dinning_philosophers/.pic={
+    \pic at (0,0) {philosopher={1}
+        {take left}{eating}{take right}
+        {put left}{thinking}{put right}
+        {->,> = latex'}
+    };
+    \node[token](p5token#1) at (p51){};
+    \pic at (0,5) {philosopher={2}
+        {put right}{thinking}{put left}
+        {take right}{eating}{take left}
+        {<-,> = latex'}
+    };
+    \node[token](p4token2) at (p42){};
+    
+    \node [place] (pr1) at ([xshift=1.8cm,yshift=1.5cm]trf1) [label=left:fork2]{};
+    \node[token](prtoken1) at (pr1){};
+    \node [place] (pr2) at ([xshift=-1.8cm,yshift=1.5cm]tlf1) [label=right:fork1]{};
+    \node[token](prtoken2) at (pr2){};
+    
+    % \draw[edge] (pr1)  to (trf1);
+    \coordinate (c11) at ([xshift=1.2cm]trf1);
+    \coordinate (c12) at ([xshift=1.2cm]prf2);
+    \coordinate (c21) at ([xshift=-1.2cm]tlf1);
+    \coordinate (c22) at ([xshift=-1.2cm]plf2);
+    \path[draw,edge] (pr1) -- (c11) -- (trf1);
+    \path[draw,edge] (pr1) -- (c12) -- (prf2);
+    \path[draw,edge] (pr2) -- (c21) -- (tlf1);
+    \path[draw,edge] (pr2) -- (c22) -- (plf2);
+    \path[draw,edge] (prf1) -| (pr1);
+    \path[draw,edge] (trf2) -| (pr1);
+    \path[draw,edge] (plf1) -| (pr2);
+    \path[draw,edge] (tlf2) -| (pr2);
+  },
+  pics/ttt_cell/.style 2 args={code={
+    \tikzset{node distance=0.4cm}
+    \node[transition] (x#1#2) [label={[yshift=0.13cm]above:X}] {};
+    \node[place] (c#1#2) [right=of x#1#2,label=above:$({#1,#2})$]{};
+    \node[token](c#1#2token) at (c#1#2.center){};
+    \node[transition] (o#1#2) [right=of c#1#2,label={[yshift=0.13cm]above:O}] {};
+    
+    \draw[edge] (c#1#2) to (x#1#2);
+    \draw[edge] (c#1#2) to (o#1#2);
+    \draw[edge] (o#1#2) to (turnx);
+    \draw[edge] (turnx) to (x#1#2);
+    \draw[edge] (x#1#2) to (turno);
+    \draw[edge] (turno) to (o#1#2);
+  }},
+  ttt_line/.pic={
+    \tikzset{node distance=1.5cm and 1cm}
+    \pic at (0,0) {ttt_cell={#1}{0}};
+    \pic [right=of o#10] {ttt_cell={#1}{1}};
+    \pic [right=of o#11] {ttt_cell={#1}{2}};
+  },
+  ttt/.pic={
+    \tikzset{node distance=1.5cm and 1cm}
+    \node[place] (turnx) at (0,0)[label=above:{Turn X}]{};
+    \node[place, below right=2cm and 10.5cm of turnx.center] (turno) [label=above:{Turn O}]{};
+    \node[transition] (begin) [below=1cm of turnx,label=below:begin] {};
+    \node[place] (new) [below=1cm of begin]{};
+    \node[token] (newt) at (new){};
+    \draw[edge] (begin) to (turnx);
+    \draw[edge] (new) to (begin);
+    \pic [above right=1cm and 1cm of turnx.center] {ttt_line={0}};
+    \pic [below right=1cm and 1cm of turnx.center] {ttt_line={1}};
+    \pic [below right=3.4cm and 1cm of turnx.center] {ttt_line={2}};
+  },
+  tttx/.pic={
+    \tikzset{node distance=1.5cm and 1cm}
+    \pic[opacity=0.4] at (0,0) {ttt};
+    \node[place] (nowin) [above=of c01, label=above:game\\token] {};
+    \node[token] (nowint) at (nowin) {};
+    \node[transition] (xwin) at ([xshift=-0.3cm]nowin-|x02) [label={[yshift=0.05cm]above:row$_0$\\X win}] {};
+    \node[place] (xCounterLine0) at ([xshift=0.5cm]xwin-|o02) [label=above:row$_0$\\X counter] {};
+    \foreach \x in {0,1,2}
+      \foreach \y in {0,1,2} {
+        \draw[edge] (o\x\y) to[bend right=3] (nowin);
+        \draw[edge] (nowin) to[bend right=3] (o\x\y);
+        \draw[edge] (x\x\y) to[bend right=3] (nowin);
+        \draw[edge] (nowin) to[bend right=3] (x\x\y);
+        \ifthenelse{\x=0}{\draw[edge] (x\x\y) to (xCounterLine0)}{};
+      }
+    \draw[edge] (xCounterLine0) -- (xwin) node[midway, above] {$3$};
+    \draw[edge] (nowin) to (xwin) {};
+  }
+}

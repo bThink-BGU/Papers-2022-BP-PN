@@ -1,0 +1,607 @@
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+\pdfoutput=1
+
+\ifCLASSOPTIONcompsoc
+  % IEEE Computer Society needs nocompress option
+  % requires cite.sty v4.0 or later (November 2003)
+  \usepackage[nocompress]{cite}
+\else
+  % normal IEEE
+  \usepackage{cite}
+\fi
+
+\usepackage{orcidlink}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{listings}
+\AtBeginDocument{\DeclareCaptionSubType{lstlisting}}
+\usepackage{adjustbox}
+\usepackage{caption,subcaption}
+\usepackage{stfloats}
+\usepackage{commath}
+\usepackage{booktabs}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\usepackage{bp-listings}
+\lstset{
+    style=BPjs,
+    numbers=none,
+}
+\usepackage{xspace}
+\newcommand{\eg}{\emph{e.g.,}\xspace}
+\newcommand{\ie}{\emph{i.e.,}\xspace}
+\newcommand{\cf}{\emph{cf.,}\xspace}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\def\xcolorversion{2.00}
+\def\xkeyvalversion{1.8}
+
+\usepackage{pgf-lc}
+
+\usepackage{array}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\begin{document}
+
+\title{What Petri Nets Oblige Us to Say\\
+{\Large Comparing Approaches for Behavior Composition}}
+\author{Achiya~Elyasaf\orcidlink{0000-0002-4009-5353}, Tom~Yaacov\orcidlink{0000-0002-0565-6506}, and Gera~Weiss\orcidlink{0000-0002-5832-8768}
+\IEEEcompsocitemizethanks{\IEEEcompsocthanksitem All authors are with Ben-Gurion University of the of the Negev, Israel. E-mail: \{achiya,geraw\}@bgu.ac.il, tomya@post.bgu.ac.il}}
+
+
+\IEEEtitleabstractindextext{%
+\begin{abstract}
+We identify and demonstrate a weakness of Petri Nets (PN) in specifying composite behavior of reactive systems. Specifically, we show how, when specifying multiple requirements in one PN model, modelers are obliged to specify mechanisms for combining these requirements. This yields, in many cases, over-specification and incorrect models. We demonstrate how some execution paths are missed, and some are generated unintentionally. 
+To support this claim, we analyze PN models from the literature, identify the combination mechanisms, and demonstrate their effect on the correctness of the model.
+To address this problem, we propose to model the system behavior using behavioral programming (BP), a software development and modeling paradigm designed for seamless integration of independent requirements. 
+Specifically, we demonstrate how the semantics of BP, which define how to interweave scenarios into a single model, allow avoiding the over-specification. 
+Additionally, while BP maintains the same mathematical properties as PN, it provides means for changing the model dynamically, thus increasing the agility of the specification. 
+We compare BP and PN in quantitative and qualitative measures by analyzing the models, their generated execution paths, and the specification process.
+Finally, while BP is supported by tools that allow for applying formal methods and reasoning techniques to the model, it lacks the legacy of PN tools and algorithms. To address this issue, we propose semantics and a tool for translating BP models to PN and vice versa.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Petri Nets, Behavioral Programming, Linguistic Relativity
+\end{IEEEkeywords}} 
+
+
+% make the title area
+\maketitle
+\IEEEdisplaynontitleabstractindextext
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+%\ifCLASSOPTIONcompsoc
+%\IEEEraisesectionheading{\section{}}
+%\else
+%\section{Introduction}
+%\fi
+\IEEEPARstart{B}{ellow} are the listings and figures from our paper:\\\url{https://arxiv.org/abs/2205.00221}.\vspace{2em}
+
+\begin{lstlisting}[
+%   float=thpb,
+  xleftmargin=.02\columnwidth, xrightmargin=.02\columnwidth,
+  numbers=none,
+  basicstyle=\footnotesize\ttfamily,
+  label={lst:AB-base},
+  caption={A b-program that do `A' and `B' three times each. The order between `A' and `B' events is arbitrary.}
+]
+bthread("Do-A", function() {
+  sync({ request: A })
+  sync({ request: A })
+  sync({ request: A })
+})
+
+bthread("Do-B", function() {
+  sync({ request: B })
+  sync({ request: B })
+  sync({ request: B })
+})
+\end{lstlisting}
+
+\begin{lstlisting}[
+  style=BPjs,
+%   float=thpb,
+  xleftmargin=.02\columnwidth, xrightmargin=.02\columnwidth,
+  numbers=none,
+  basicstyle=\footnotesize\ttfamily,
+  label={lst:AB-interleave},
+  caption={A b-thread that ensures that two actions of the same type cannot be executed consecutively, by blocking and additional request of `A' until the `B' is performed, and vice-versa.},
+]
+bthread("Interleave", function() {
+  while(true) {
+    sync({ waitFor: B, 
+             block: A })
+             
+    sync({ waitFor: A, 
+             block: B })
+  }
+})
+\end{lstlisting}
+
+\begin{lstlisting}[
+  float=tbph,
+%   xleftmargin=.06\textwidth,
+%   xrightmargin=.1\textwidth,
+  label={lst:railway1},
+  caption={A BP program that specifies the requirements for a single railway. Each b-thread is aligned with a single requirement. An application-agnostic execution engine interweaves these b-threads at runtime, yielding a complex behavior that is consistent with each b-thread, liberating the designer from explicitly specifying the joint model.},
+]
+bthread("R1: Railway Sensors", function() {
+  while(true) {
+    sync({ request: Approaching })
+    sync({ request: Entering })
+    sync({ request: Leaving })
+  }
+})
+
+bthread("R2: Barriers Dynamics", function() {
+  while(true) {
+    sync({ waitFor: Approaching })
+    sync({ request: Lower })
+    sync({ request: Raise })
+  }
+})
+
+bthread("R3: A train may not enter while " +
+   "barriers are up", function() {
+  while(true) {
+    sync({ waitFor: Lower, block: Entering })
+    sync({ waitFor: Raise })
+  }
+})
+
+bthread("R4: Do not raise barriers while a " +
+    "train is in the intersection", function() {
+  while(true) {
+    sync({ waitFor: Approaching })
+    sync({ waitFor: Leaving, block: Raise })
+  }
+})
+\end{lstlisting}
+
+\begin{figure}
+  \centering
+\begin{tikzpicture}
+    \pic {railway={1}};
+\end{tikzpicture}
+  \caption{The PN LC model of~\cite{leveson1987safety} for the railway traffic subsystem.}
+  \label{fig:railway_lpn}
+\end{figure}
+
+\begin{figure}
+  \centering
+\begin{tikzpicture}
+    \pic {barrier_display};
+\end{tikzpicture}
+  \caption{The PN LC model of~\cite{leveson1987safety} for the barriers subsystem.}
+  \label{fig:barrier}
+\end{figure}
+
+\begin{figure}
+  \centering
+\begin{tikzpicture}
+    \pic {controller_display};
+\end{tikzpicture}
+  \caption{The PN LC model of~\cite{leveson1987safety} the barrier-controller subsystem.}
+  \label{fig:barrier_controller}
+\end{figure}
+
+\begin{figure}
+  \centering
+\begin{tikzpicture}
+    \pic {single_track_display};
+\end{tikzpicture}
+  \caption{The unified PN LC model of~\cite{leveson1987safety}, including the three subsystems and the interlocking mechanism.}
+  \label{fig:ghazel-single} 
+\end{figure}
+
+\begin{figure*}
+\centering
+\begin{subfigure}{.3\textwidth}
+  \begin{adjustbox}{width=\linewidth}
+  % include first image
+  \begin{tikzpicture}
+    \pic {bp_automata};
+\end{tikzpicture} 
+\end{adjustbox}
+  \caption{Behavioral programming}
+  \label{fig:sub-first}
+\end{subfigure}\qquad\qquad\qquad\qquad\qquad
+\begin{subfigure}{.3\textwidth}
+%   \centering
+  \begin{adjustbox}{width=\linewidth}
+  % include second image
+  \begin{tikzpicture}
+    \pic {pn_automata};
+\end{tikzpicture}
+\end{adjustbox}
+  \caption{Petri nets}
+  \label{fig:sub-second}
+\end{subfigure}
+\caption{The generated automaton of each of the models for a single track.}
+\label{fig:models_automata}
+\end{figure*}
+
+
+\begin{figure*}[tbph]
+\captionsetup{type=lstlisting}
+\begin{sublstlisting}[b]{0.35\linewidth}
+\begin{lstlisting}[
+    numbers=none,
+    xleftmargin=0\textwidth,
+    xrightmargin=0\textwidth,
+]
+bthread("R2: Barriers Dynamics", 
+    function() {
+  while(true) {
+    sync({ waitFor: Approaching })
+    sync({ request: Lower })
+    sync({ request: Raise })
+  }
+})
+\end{lstlisting}
+\caption{The original b-thread}
+\label{lst:bthread2:1}
+\end{sublstlisting}\hfill
+\begin{sublstlisting}[b]{0.6\linewidth}
+\begin{lstlisting}[
+    numbers=none,
+]
+bthread("R2*: Modified Barriers Dynamics", function(){
+  while (true) {
+    sync({ waitFor: Approaching })
+    sync({ request: Lower })
+    while (true) {
+      sync({ waitFor: Leaving })
+      let e = sync({ request: Raise, waitFor: Approaching })
+      if (e == Raise) {
+        sync({ waitFor: Approaching })
+        sync({ request: Lower })
+      } else {
+        sync({ request: Raise, block: Entering })
+        sync({ request: Lower })
+      }
+    }
+  }
+})
+\end{lstlisting}
+\caption{The modified b-thread}
+\label{lst:bthread2:2}
+\end{sublstlisting}
+\caption{Adapting the second b-thread to the change in the requirement.}
+\label{lst:bthread2}
+\end{figure*}
+
+\newsavebox{\tempbox}
+\sbox{\tempbox}{\begin{tikzpicture}
+\pic {multi_track_display};
+\end{tikzpicture}%
+}
+\newbox{\mybox}
+\begin{lrbox}{\mybox}
+\begin{lstlisting}[linewidth=7cm,numbers=none]
+function bt(i) {
+  bthread("R1 "+i, function() {
+    while(true) {
+      sync({ request: Approaching(i) })
+      sync({ request: Entering(i) })
+      sync({ request: Leaving(i) })
+    }
+  })
+
+  bthread("R3 "+i, function() {
+    while(true) {
+      sync({ waitFor: Lower, 
+               block: Entering(i) })
+      sync({ waitFor: Raise })
+    }
+  })
+
+  // other b-threads are 
+  // omitted for brevity. 
+}
+
+for (var i = 0; i < n; i++) 
+  bt(i)
+\end{lstlisting}
+\end{lrbox}
+
+\begin{figure*}[tbph]
+    \centering
+    \subfloat[The extended model of~\cite{ghazel2016customizable}. The changes from the model of~\cite{leveson1987safety} are emphasized.\label{fig:multi-track:pn}]
+    {\adjustbox{scale=0.8,valign=b}{\usebox\tempbox}}
+    \qquad\qquad\qquad
+    \subfloat[The extended BP model.\label{fig:multi-track:bp}]
+    {\adjustbox{valign=b}{\usebox\mybox}}
+    \caption{Multi-track extensions of the two models. Besides multiplying the railway traffic subsystem, the PN extension consists of additional arcs, tokens, and a transition, as opposed to the BP extension.}
+    \label{fig:multi-track}
+\end{figure*}
+
+\begin{figure}
+  \centering
+\begin{tikzpicture}
+    \pic {multi_track_fault_display};
+\end{tikzpicture}
+  \caption{The extension of~\cite{ghazel2016customizable} to the PN model that adds faults (new transitions and arcs are emphasized).}
+  \label{fig:ghazel-fault} 
+\end{figure}
+
+
+\begin{lstlisting}[
+  style=BPjs,
+  float=tbph,
+  xleftmargin=.02\columnwidth, xrightmargin=.02\columnwidth,
+  numbers=none,
+  basicstyle=\footnotesize\ttfamily,
+  label={lst:fault-bthreads},
+  caption={Faults b-threads for the level-crossing benchmark.},
+]
+let fault = true
+
+bthread("UnobservableEntering_"+i, function() {
+  while(true) {
+    sync({ waitFor: Approaching(i) })
+    sync({ request: Entering(i, fault) })
+  }
+})
+
+bthread("Premature Raise", function() {
+  while(true) {
+    sync({ waitFor: Lower })
+    sync({ request: Raise(fault) })
+  }
+})
+\end{lstlisting}
+
+\begin{lstlisting}[
+  style=BPjs,
+  float=thpb,
+  xleftmargin=.02\columnwidth, xrightmargin=.02\columnwidth,
+  numbers=none,
+  basicstyle=\footnotesize\ttfamily,
+  label={lst:translated-b-thread},
+  caption={$p_2$ translated b-thread},
+]
+bthread("p_2", function() {
+  var tokens = n
+  while(true) {
+    if(tokens < 1) {
+      sync({ waitFor: OpeningRequest(), 
+               block: ClosingRequest() })
+      tokens += 1
+    } else {
+      if(sync({ waitFor: [ClosingRequest(),
+                          OpeningRequest()] })
+        .name === "ClosingRequest" ) {
+        tokens -= 1
+      } else {
+        tokens += 1
+      }
+    }
+  }
+})
+\end{lstlisting}
+
+\begin{lstlisting}[
+  style=BPjs,
+  float=thpb,
+  xleftmargin=.02\columnwidth, xrightmargin=.02\columnwidth,
+  numbers=none,
+  basicstyle=\footnotesize\ttfamily,
+  label={lst:translated-b-thread2},
+  caption={The ``auxiliary'' translated b-thread},
+]
+bthread("auxiliary", function() {
+  while(true)
+    sync({ request: 
+       [ClosingRequest(), OpeningRequest()] })
+})
+\end{lstlisting}
+
+\begin{figure*}
+\centering
+\begin{tikzpicture}
+    \pic {dinning_philosophers};
+\end{tikzpicture}
+\caption{The PN model of~\cite{workcraftDinning} for the dining philosophers problem.}
+\label{fig:dining-philosophers}
+\end{figure*}
+
+\begin{lstlisting}[
+  style=BPjs,
+  float=t,
+  numbers=none,
+  breaklines=true,
+  label={lst:dining},
+  caption={A behavioral program of the dining philosopher, taken from~\cite{harel2011model}.},
+]
+const PHIL_COUNT = 2
+
+const ForkTaken = i => 
+  [Take(i, "R"), Take((i % PHIL_COUNT) + 1, "L")]
+const ForkPut = i => 
+  [Put(i, "R"), Put((i % PHIL_COUNT) + 1, "L")]
+
+for (let c = 1; c <= PHIL_COUNT; c++) {
+  let i = c
+  bthread('Fork ' + i + ' behavior', function () {
+    while (true) {
+      sync({waitFor: ForkTaken(i), 
+              block: ForkPut(i)})
+      sync({waitFor: ForkPut(i), 
+              block: ForkTaken(i)})
+    }
+  })
+
+  bthread('Philosopher ' + i + ' behavior', 
+      function () {
+    while (true) {
+      sync({request: [Take(i, 'R'),Take(i, 'L')]})
+      sync({request: [Take(i, 'R'),Take(i, 'L')]})
+      sync({request: [Put(i, 'R'),Put(i, 'L')]})
+      sync({request: [Put(i, 'R'),Put(i, 'L')]})
+    }
+  })
+}
+\end{lstlisting}
+
+\begin{lstlisting}[
+  style=BPjs,
+  numbers=none,
+  float=tbph,
+  label={lst:dining:liveness},
+  caption={Liveness requirements for the dining\newline philosophers. A hot synchronization point specifies that whenever the b-thread arrives to this point, it will eventually proceed.},]
+for (let c = 1; c <= PHIL_COUNT; c++) {
+  let i = c
+
+  // A taken fork will eventually be released
+  bthread('[](take -> <>put)', function () {
+    while (true) {
+      sync({waitFor: ForkTaken(i)})
+      hot(true).sync({waitFor: ForkPut(i)})
+    }
+  })
+
+  // A hungry philosopher will eventually eat
+  bthread('NoStarvation', function () {
+    while (true) {
+      hot(true).sync({waitFor: 
+         [Take(i, 'R'), Take(i, 'L')]})
+      hot(true).sync({waitFor: 
+         [Take(i, 'R'), Take(i, 'L')]})
+      sync({waitFor: [Put(i, 'R'), Put(i, 'L')]})
+      sync({waitFor: [Put(i, 'R'), Put(i, 'L')]})
+    }
+  })
+}
+\end{lstlisting}
+
+\begin{lstlisting}[
+  style=BPjs,
+  numbers=none,
+  float=tbph,
+  label={lst:dining:arbitrator},
+  caption={An arbitrator solution to the deadlock requirement.}]
+bthread('Semaphore', function () {
+  while (true) {
+    sync({waitFor: AnyTakeSemaphore})
+    sync({waitFor: AnyReleaseSemaphore, 
+            block: AnyTakeSemaphore})
+  }
+})
+
+for (let c = 1; c <= PHIL_COUNT; c++) {
+  let i = c
+  bthread('Take semaphore ' + i, function () {
+    while (true) {
+      sync({request: TakeSemaphore(i), 
+              block: [Take(i, 'R'),Take(i, 'L')]})
+      sync({waitFor: [Put(i, 'R'), Put(i, 'L')]})
+      sync({waitFor: [Put(i, 'R'), Put(i, 'L')]})
+      sync({request: ReleaseSemaphore(i), 
+              block: [Take(i, 'R'),Take(i, 'L')]})
+    }
+  })
+}
+\end{lstlisting}
+
+
+\begin{figure*}
+\begin{minipage}[b]{0.37\textwidth}
+\centering
+\begin{lstlisting}[
+%   float=thbp,
+%   frame=tlrb,
+  label={lst:ttt},
+  numbers=left,
+  caption={A behavioral program for the game of Tic-Tac-Toe, taken from~\cite{harel2010programming}. Lines 1-20 specify the same behavior as the PN model of \autoref{fig:ttt}, and the b-thread in line 29, with l=``first row", specifies the same behavior as the PN model of \autoref{fig:ttt-xwin}.},
+]
+cells.forEach(c => {
+  bthread('Cells cannot be marked ' + 
+      'twice', function(){
+    sync({waitFor: [O(c), X(c)]})
+    sync({  block: [O(c), X(c)]})
+  }) })
+  
+bthread('Enforce turns', function(){
+  while(true) {
+    sync({waitFor: AnyX, 
+            block: AnyO})
+    sync({waitFor: AnyO, 
+            block: AnyX})
+  }
+})
+
+bthread('Play randomly', function(){
+  while(true)
+    sync({request: XOmoves})
+})
+// ################################
+// Above: the behavior of $\autoref{fig:ttt}$.
+// ################################
+
+lines.forEach(l => {
+  // This b-thread, with l=first row,
+  // is equivalent to the extension 
+  // in $\autoref{fig:ttt-xwin}$.
+  bthread('Detect X win', function(){
+    for(let i = 0; i < 3; i++)
+      sync({waitFor: 
+        [X(l.c1),X(l.c2),X(l.c3)]})
+    sync({request: XWin}, 100)
+    sync({  block: bp.all })
+  })
+  
+  bthread('Detect O win', function(){
+    for(let i = 0; i < 3; i++)
+      sync({waitFor:
+        [O(l.c1),O(l.c2),O(l.c3)]})
+    sync({request: OWin}, 100)
+    sync({  block: bp.all })
+  })
+})
+
+bthread('Detect a tie', function(){
+  for(let i = 0; i < 9; i++)
+    sync({request: Tie}, 90)
+    sync({  block: bp.all })
+})
+\end{lstlisting}
+\end{minipage}
+\quad
+\begin{minipage}[b]{0.6\textwidth}
+\centering
+    {\adjustbox{scale=0.9,valign=b}{
+    \begin{tikzpicture}
+        \pic{ttt};
+    \end{tikzpicture}}}
+    \caption{The PN model of~\cite{PetriNetDSLblahchain} for the game of Tic-Tac-Toe. The model implements only two requirements out of four.}
+    \label{fig:ttt}\vspace{13ex}
+  
+    {\adjustbox{scale=0.9,valign=b}{
+    \begin{tikzpicture}
+        \pic[scale=0.6]{tttx};
+    \end{tikzpicture}}}
+    \caption{Our extended version of the PN model of~\cite{PetriNetDSLblahchain}. The model includes a mechanism for terminating the game when X wins by taking the first row.}
+    \label{fig:ttt-xwin}\vspace{6em}\vspace{-2pt}
+\end{minipage}
+\end{figure*}
+
+\bibliographystyle{IEEEtran}
+\bibliography{bp_pn}
+
+\end{document}
