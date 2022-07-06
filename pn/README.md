@@ -1,7 +1,12 @@
 # A Python project for the Petri-nets models of the paper
-<b>This repository contains Petri nets models of the paper implemented using the [SNAKES](https://snakes.ibisc.univ-evry.fr) package. The code creates a pn model and generates a reachability graph automaton. The automaton is written in xml and can be viewed and edited using [GOAL](http://goal.im.ntu.edu.tw/wiki/doku.php). </b>
+This folder contains executable versions of the Petri-net models of the paper. We implemented them using the Python [SNAKES](https://snakes.ibisc.univ-evry.fr) package. 
 
-<b>*Note: the project was implemented and tested on Python 3.7.4</b>
+The code creates a PN model and generates from it a reachability graph automaton. The automaton is written in XML and can be viewed and edited using the [GOAL](http://goal.im.ntu.edu.tw/wiki/doku.php) tool. 
+
+The output XMLs for the models below are included in the [exports](pn/exports) folder. 
+
+<b>* Note: the project was implemented and tested on Python 3.7.4</b>
+
 ## Installation
 <ol>
 <li>
