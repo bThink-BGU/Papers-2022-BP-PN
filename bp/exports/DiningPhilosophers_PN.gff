@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Structure label-on="Transition" type="FiniteStateAutomaton">
+    <Name>G</Name>
+    <Description/>
+    <Formula/>
+    <Alphabet type="Classical">
+        <Symbol>putLeftFork1</Symbol>
+        <Symbol>putLeftFork2</Symbol>
+        <Symbol>putRightFork1</Symbol>
+        <Symbol>putRightFork2</Symbol>
+        <Symbol>startEating1</Symbol>
+        <Symbol>startEating2</Symbol>
+        <Symbol>startThinking1</Symbol>
+        <Symbol>startThinking2</Symbol>
+        <Symbol>takeLeftFork1</Symbol>
+        <Symbol>takeLeftFork2</Symbol>
+        <Symbol>takeRightFork1</Symbol>
+        <Symbol>takeRightFork2</Symbol>
+    </Alphabet>
+    <StateSet>
+        <State sid="0">
+            <X>522</X>
+            <Y>282</Y>
+            <Properties>
+                <Entry name="start">true</Entry>
+                <Entry name="id">0</Entry>
+                <Entry name="hash">-1916107349</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="1">
+            <X>354</X>
+            <Y>105</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">1</Entry>
+                <Entry name="hash">128246515</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="2">
+            <X>106</X>
+            <Y>233</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">2</Entry>
+                <Entry name="hash">-684462947</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="3">
+            <X>201</X>
+            <Y>312</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">3</Entry>
+                <Entry name="hash">-2096750339</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="4">
+            <X>164</X>
+            <Y>135</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">4</Entry>
+                <Entry name="hash">-2057807713</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="5">
+            <X>90</X>
+            <Y>187</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">5</Entry>
+                <Entry name="hash">-421471891</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="6">
+            <X>480</X>
+            <Y>69</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">6</Entry>
+                <Entry name="hash">1622881973</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="7">
+            <X>498</X>
+            <Y>214</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">7</Entry>
+                <Entry name="hash">128246515</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="8">
+            <X>327</X>
+            <Y>159</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">8</Entry>
+                <Entry name="hash">-2122366917</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="9">
+            <X>391</X>
+            <Y>105</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">9</Entry>
+                <Entry name="hash">-684462947</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="10">
+            <X>192</X>
+            <Y>320</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">10</Entry>
+                <Entry name="hash">2090200065</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="11">
+            <X>326</X>
+            <Y>162</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">11</Entry>
+                <Entry name="hash">-2057807713</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="12">
+            <X>340</X>
+            <Y>143</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">12</Entry>
+                <Entry name="hash">-421471891</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="13">
+            <X>534</X>
+            <Y>346</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">13</Entry>
+                <Entry name="hash">-1234181353</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="14">
+            <X>345</X>
+            <Y>146</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">14</Entry>
+                <Entry name="hash">1566150485</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="15">
+            <X>70</X>
+            <Y>203</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">15</Entry>
+                <Entry name="hash">753441023</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="16">
+            <X>459</X>
+            <Y>339</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">16</Entry>
+                <Entry name="hash">1622881973</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="17">
+            <X>135</X>
+            <Y>271</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">17</Entry>
+                <Entry name="hash">742524125</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="18">
+            <X>205</X>
+            <Y>137</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">18</Entry>
+                <Entry name="hash">-70185337</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="19">
+            <X>307</X>
+            <Y>122</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">19</Entry>
+                <Entry name="hash">1566150485</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="20">
+            <X>374</X>
+            <Y>332</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">20</Entry>
+                <Entry name="hash">-1508089307</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="21">
+            <X>461</X>
+            <Y>249</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">21</Entry>
+                <Entry name="hash">-1234181353</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="22">
+            <X>111</X>
+            <Y>214</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">22</Entry>
+                <Entry name="hash">742524125</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="23">
+            <X>341</X>
+            <Y>106</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">23</Entry>
+                <Entry name="hash">-1508089307</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+        <State sid="24">
+            <X>133</X>
+            <Y>144</Y>
+            <Properties>
+                <Entry name="start">false</Entry>
+                <Entry name="id">24</Entry>
+                <Entry name="hash">-70185337</Entry>
+                <Entry name="accepting">true</Entry>
+            </Properties>
+        </State>
+    </StateSet>
+    <InitialStateSet>
+        <StateID>0</StateID>
+    </InitialStateSet>
+    <TransitionSet complete="false">
+        <Transition tid="0">
+            <From>0</From>
+            <To>1</To>
+            <Description>1</Description>
+            <Label>takeRightFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="39">
+            <From>0</From>
+            <To>7</To>
+            <Description>40</Description>
+            <Label>takeRightFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="37">
+            <From>0</From>
+            <To>14</To>
+            <Description>38</Description>
+            <Label>takeLeftFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="38">
+            <From>0</From>
+            <To>19</To>
+            <Description>39</Description>
+            <Label>takeLeftFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="1">
+            <From>1</From>
+            <To>2</To>
+            <Description>2</Description>
+            <Label>takeLeftFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="36">
+            <From>1</From>
+            <To>8</To>
+            <Description>37</Description>
+            <Label>takeRightFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="2">
+            <From>2</From>
+            <To>3</To>
+            <Description>3</Description>
+            <Label>startEating2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="3">
+            <From>3</From>
+            <To>4</To>
+            <Description>4</Description>
+            <Label>startThinking2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="4">
+            <From>4</From>
+            <To>5</To>
+            <Description>5</Description>
+            <Label>putLeftFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="30">
+            <From>4</From>
+            <To>22</To>
+            <Description>31</Description>
+            <Label>putRightFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="27">
+            <From>5</From>
+            <To>0</To>
+            <Description>28</Description>
+            <Label>putRightFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="5">
+            <From>5</From>
+            <To>6</To>
+            <Description>6</Description>
+            <Label>takeRightFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="28">
+            <From>5</From>
+            <To>21</To>
+            <Description>29</Description>
+            <Label>takeLeftFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="6">
+            <From>6</From>
+            <To>7</To>
+            <Description>7</Description>
+            <Label>putRightFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="7">
+            <From>7</From>
+            <To>8</To>
+            <Description>8</Description>
+            <Label>takeRightFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="8">
+            <From>7</From>
+            <To>9</To>
+            <Description>9</Description>
+            <Label>takeLeftFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="9">
+            <From>9</From>
+            <To>10</To>
+            <Description>10</Description>
+            <Label>startEating1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="10">
+            <From>10</From>
+            <To>11</To>
+            <Description>11</Description>
+            <Label>startThinking1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="11">
+            <From>11</From>
+            <To>12</To>
+            <Description>12</Description>
+            <Label>putLeftFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="19">
+            <From>11</From>
+            <To>17</To>
+            <Description>20</Description>
+            <Label>putRightFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="16">
+            <From>12</From>
+            <To>0</To>
+            <Description>17</Description>
+            <Label>putRightFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="12">
+            <From>12</From>
+            <To>13</To>
+            <Description>13</Description>
+            <Label>takeLeftFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="17">
+            <From>12</From>
+            <To>16</To>
+            <Description>18</Description>
+            <Label>takeRightFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="13">
+            <From>13</From>
+            <To>14</To>
+            <Description>14</Description>
+            <Label>putRightFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="15">
+            <From>14</From>
+            <To>9</To>
+            <Description>16</Description>
+            <Label>takeRightFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="14">
+            <From>14</From>
+            <To>15</To>
+            <Description>15</Description>
+            <Label>takeLeftFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="18">
+            <From>16</From>
+            <To>1</To>
+            <Description>19</Description>
+            <Label>putRightFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="24">
+            <From>17</From>
+            <To>0</To>
+            <Description>25</Description>
+            <Label>putLeftFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="20">
+            <From>17</From>
+            <To>18</To>
+            <Description>21</Description>
+            <Label>takeLeftFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="25">
+            <From>17</From>
+            <To>20</To>
+            <Description>26</Description>
+            <Label>takeRightFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="21">
+            <From>18</From>
+            <To>19</To>
+            <Description>22</Description>
+            <Label>putLeftFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="23">
+            <From>19</From>
+            <To>2</To>
+            <Description>24</Description>
+            <Label>takeRightFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="22">
+            <From>19</From>
+            <To>15</To>
+            <Description>23</Description>
+            <Label>takeLeftFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="26">
+            <From>20</From>
+            <To>7</To>
+            <Description>27</Description>
+            <Label>putLeftFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="29">
+            <From>21</From>
+            <To>19</To>
+            <Description>30</Description>
+            <Label>putRightFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="35">
+            <From>22</From>
+            <To>0</To>
+            <Description>36</Description>
+            <Label>putLeftFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="31">
+            <From>22</From>
+            <To>23</To>
+            <Description>32</Description>
+            <Label>takeRightFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="33">
+            <From>22</From>
+            <To>24</To>
+            <Description>34</Description>
+            <Label>takeLeftFork1</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="32">
+            <From>23</From>
+            <To>1</To>
+            <Description>33</Description>
+            <Label>putLeftFork2</Label>
+            <Properties/>
+        </Transition>
+        <Transition tid="34">
+            <From>24</From>
+            <To>14</To>
+            <Description>35</Description>
+            <Label>putLeftFork2</Label>
+            <Properties/>
+        </Transition>
+    </TransitionSet>
+    <Acc type="Buchi">
+        <StateID>0</StateID>
+        <StateID>1</StateID>
+        <StateID>2</StateID>
+        <StateID>3</StateID>
+        <StateID>4</StateID>
+        <StateID>5</StateID>
+        <StateID>6</StateID>
+        <StateID>7</StateID>
+        <StateID>8</StateID>
+        <StateID>9</StateID>
+        <StateID>10</StateID>
+        <StateID>11</StateID>
+        <StateID>12</StateID>
+        <StateID>13</StateID>
+        <StateID>14</StateID>
+        <StateID>15</StateID>
+        <StateID>16</StateID>
+        <StateID>17</StateID>
+        <StateID>18</StateID>
+        <StateID>19</StateID>
+        <StateID>20</StateID>
+        <StateID>21</StateID>
+        <StateID>22</StateID>
+        <StateID>23</StateID>
+        <StateID>24</StateID>
+    </Acc>
+    <Properties>
+        <Entry name="num_of_vertices">25</Entry>
+        <Entry name="num_of_events">12</Entry>
+        <Entry name="num_of_edges">40</Entry>
+        <Entry name="run_date">"2022-07-06T12:43:31.527157"</Entry>
+    </Properties>
+</Structure>

@@ -34,16 +34,17 @@ There are code samples for each of the following paper examples:
 
 Each example has two type of models - BP and (translated) PN.
 
-The level-crossing example has an additional parameter that specifies the number of desired tracks.
 
-Optional parameters:
-* *--no-paths*   Do not generate the csv file (see below).
-* *--no-helper*  Remove helper events for the level-crossing example.
+Optional parameters for the Level Crossing example:
+* *--num-of-tracks \<arg\>* - number of desired tracks.
+* *--no-paths* - do not generate the csv file (see below).
+* *--no-helper* - remove helper events for the level-crossing example.
+* *--with-faults* - add faults for the level-crossing example.
 
 ### Executing the code
 ```shell
 export MAVEN_OPTS="-Xms4g -Xmx8g"
-mvn exec:java -D"exec.args"="TicTacToe|DiningPhilosophers|LevelCrossing BP|PN [number of tracks] [additional params]"
+mvn exec:java -D"exec.args"="--example <TicTacToe|DiningPhilosophers|LevelCrossing> --model <BP|PN> --num-of-tracks [number of tracks] [additional params]"
 ```
 
 ### Output

@@ -1,0 +1,30 @@
+digraph G {
+  name="lc_pn_R-1";
+  num_of_vertices=10;
+  num_of_events=8;
+  num_of_edges=13;
+  run_date="2022-07-06T12:43:47.145388";
+  0 [ shape="none " start="true" id="0" hash="-1083241125" accepting="true" ];
+  1 [ shape="doublecircle" start="false" id="1" hash="1592146166" accepting="true" ];
+  2 [ shape="doublecircle" start="false" id="2" hash="384172839" accepting="true" ];
+  3 [ shape="doublecircle" start="false" id="3" hash="1126841398" accepting="true" ];
+  4 [ shape="doublecircle" start="false" id="4" hash="-1277208798" accepting="true" ];
+  5 [ shape="doublecircle" start="false" id="5" hash="748043630" accepting="true" ];
+  6 [ shape="doublecircle" start="false" id="6" hash="-871536375" accepting="true" ];
+  7 [ shape="doublecircle" start="false" id="7" hash="-1410659932" accepting="true" ];
+  8 [ shape="doublecircle" start="false" id="8" hash="1676334037" accepting="true" ];
+  9 [ shape="doublecircle" start="false" id="9" hash="208920073" accepting="true" ];
+  0 -> 1 [ Label="Approaching0" ];
+  1 -> 2 [ Label="ClosingRequest" ];
+  2 -> 3 [ Label="Lower" ];
+  3 -> 4 [ Label="Entering0" ];
+  4 -> 5 [ Label="Leaving0" ];
+  5 -> 6 [ Label="Approaching0" ];
+  6 -> 7 [ Label="OpeningRequest" ];
+  7 -> 8 [ Label="ClosingRequest" ];
+  8 -> 3 [ Label="KeepDown" ];
+  7 -> 1 [ Label="Raise" ];
+  5 -> 9 [ Label="OpeningRequest" ];
+  9 -> 7 [ Label="Approaching0" ];
+  9 -> 0 [ Label="Raise" ];
+}
