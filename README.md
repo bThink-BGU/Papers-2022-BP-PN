@@ -1,5 +1,5 @@
 # What Petri Net Obliges Us to Say
-(TODO: replace links and citations to IEEE TSE once published)
+(TODO: replace links and citation to IEEE TSE once published)
 
 This repository holds the code appendix for the paper https://arxiv.org/abs/2205.00221
 
